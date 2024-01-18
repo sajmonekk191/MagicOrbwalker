@@ -1,10 +1,5 @@
-using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using MagicOrbwalker1.Essentials;
 using MagicOrbwalker1.Essentials.API;
 
@@ -34,7 +29,7 @@ namespace MagicOrbwalker1
         private const int MOUSEEVENTF_RIGHTUP = 0x10;
 
         [STAThread]
-        static void Main()
+        static async Task Main()
         {
             AllocConsole();
             Application.EnableVisualStyles();
@@ -48,12 +43,27 @@ namespace MagicOrbwalker1
  |_|  |_|\__,_|\__, |_|\___|\___/|_|  |_.__/ \_/\_/ \__,_|_|_|\_\___|_|   
                |___/                                                      
 ");
-            Console.ResetColor();
             Console.WriteLine("");
-            Console.Write("Enter your command: ");
-            Thread orbwalkThread = new Thread(OrbwalkLoop);
-            orbwalkThread.Start();
-            Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("Orbwalker is running !");
+            Console.WriteLine("");
+            Console.ResetColor();
+            while (true)
+            {
+                var apiClient = new API();
+                bool? isChampionOrEntityDead = await apiClient.IsChampionOrEntityDeadAsync();
+                if (IsTargetProcessFocused("League of Legends"))
+                {
+                    if (!isChampionOrEntityDead.Value)
+                    {
+                        Thread.Sleep(1);
+                        if ((GetAsyncKeyState(Keys.Space) & 0x8000) != 0)
+                        {
+                            OrbwalkEnemy().Wait();
+                        }
+                    }
+                }
+            }
         }
 
         private static void ClickAt(Point location)
@@ -85,28 +95,7 @@ namespace MagicOrbwalker1
                 return false;
             }
         }
-        private static async void OrbwalkLoop()
-        {
-            while (true)
-            {
-                var apiClient = new API();
-                bool? isChampionOrEntityDead = await apiClient.IsChampionOrEntityDeadAsync();
-                if (IsTargetProcessFocused("League of Legends"))
-                {
-                    if (!isChampionOrEntityDead.Value)
-                    {
-                        Thread.Sleep(10);
-                        /*API apiclient = new API();
-                        Values.SelectedChamp = await apiclient.GetChampionNameAsync();
-                        Console.Title = "MagicOrbwalker      Playing: " + Values.SelectedChamp;*/
-                        if ((GetAsyncKeyState(Keys.Space) & 0x8000) != 0)
-                        {
-                            OrbwalkEnemy().Wait();
-                        }
-                    }
-                }
-            }
-        }
+        
         private static int AAtick;
         private static int MoveCT;
 
@@ -122,13 +111,19 @@ namespace MagicOrbwalker1
                 {
                     originalPosition = new Point(Cursor.Position.X, Cursor.Position.Y);
                     ClickAt(objectPosition.Value);
-                    Thread.Sleep(5);
 
                     AAtick = Environment.TickCount;
                     int windupDelay = await GetAttackWindup();
                     MoveCT = Environment.TickCount + windupDelay;
 
                     SetCursorPos(originalPosition.X, originalPosition.Y);
+                    var apiClient = new API();
+                    float attackSpeed = await apiClient.GetAttackSpeedAsync();
+                    if (attackSpeed < 1.75)
+                    {
+                        Thread.Sleep(150);
+                    }
+
                 }
                 else
                 {
@@ -160,7 +155,7 @@ namespace MagicOrbwalker1
         private static async Task<bool> CanAttack()
         {
             int attackDelay = await GetAttackDelay();
-            return AAtick + attackDelay + 24 / 2 < Environment.TickCount;
+            return AAtick + attackDelay < Environment.TickCount;
         }
     }
 }

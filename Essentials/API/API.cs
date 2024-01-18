@@ -15,10 +15,8 @@ namespace MagicOrbwalker1.Essentials.API
         {
             var httpClientHandler = new HttpClientHandler();
 
-            // Bypass SSL certificate validation
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
 
-            // Ensure TLS 1.2 is used (optional, if there are connection issues)
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             httpClient = new HttpClient(httpClientHandler);
@@ -34,9 +32,8 @@ namespace MagicOrbwalker1.Essentials.API
 
                 return jsonData;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
                 return null;
             }
         }
@@ -52,7 +49,7 @@ namespace MagicOrbwalker1.Essentials.API
             var data = await GetActivePlayerDataAsync();
             return data?["championStats"]["attackRange"].ToObject<float>() ?? -1;
         }
-        public async Task<string> GetChampionNameAsync()
+        /*public async Task<string> GetChampionNameAsync()
         {
             try
             {
@@ -69,12 +66,11 @@ namespace MagicOrbwalker1.Essentials.API
                     return null;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
                 return null;
             }
-        }
+        }*/
         public async Task<bool?> IsChampionOrEntityDeadAsync()
         {
             try
@@ -93,9 +89,8 @@ namespace MagicOrbwalker1.Essentials.API
                     return null;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
                 return null;
             }
         }

@@ -15,7 +15,7 @@ namespace MagicOrbwalker1.Essentials
         // Orbwalker Components //
 
         // Main Hodnoty //
-        public static float Windup = 21.93f;
+        public static float Windup = 12.00f;
         public static float BaseWindup = 0.658f;
         public static string SelectedChamp;
         // Main Hodnoty //
@@ -75,30 +75,8 @@ namespace MagicOrbwalker1.Essentials
         // Champion Base Windup //
 
         // Champion Windup Modifier //
-        public static float ashebwm = 1f;
-        public static float caitlynbwm = 1f;
-        public static float corkibwm = 1f;
-        public static float dravenbwm = 1f;
-        public static float ezrealbwm = 1f;
-        public static float jinxbwm = 1f;
+        public static float everyonebwm = 1f;
         public static float kaisabwm = 0.75f;
-        public static float kalistabwm = 1f;
-        public static float kaylebwm = 1f;
-        public static float kindredbwm = 1f;
-        public static float kogmabwm = 1f;
-        public static float lucianbwm = 1f;
-        public static float mfbwm = 1f;
-        public static float olafbwm = 1f;
-        public static float quinnbwm = 1f;
-        public static float samirabwm = 1f;
-        public static float sennabwm = 1f;
-        public static float sivirbwm = 1f;
-        public static float tristanabwm = 1f;
-        public static float twitchbwm = 1f;
-        public static float varusbwm = 1f;
-        public static float vaynebwm = 1f;
-        public static float xayahbwm = 1f;
-        public static float xerathbwm = 1f;
         public static float getWindup()
         {
             return Windup;
