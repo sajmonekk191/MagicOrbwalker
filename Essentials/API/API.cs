@@ -13,12 +13,12 @@ namespace MagicOrbwalker1.Essentials.API
 
         public API()
         {
-            var httpClientHandler = new HttpClientHandler();
-
-            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
+            };
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
             httpClient = new HttpClient(httpClientHandler);
             httpClient.DefaultRequestHeaders.Add("User-Agent", "API");
         }
@@ -29,15 +29,19 @@ namespace MagicOrbwalker1.Essentials.API
             {
                 var response = await httpClient.GetStringAsync(baseUrl + "activeplayer");
                 var jsonData = JObject.Parse(response);
-
                 return jsonData;
             }
-            catch
+            catch (HttpRequestException e)
             {
+                Console.WriteLine($"Error accessing server: {e.Message}");
+                return null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unexpected error: {e.Message}");
                 return null;
             }
         }
-
         public async Task<float> GetAttackSpeedAsync()
         {
             var data = await GetActivePlayerDataAsync();
@@ -66,8 +70,14 @@ namespace MagicOrbwalker1.Essentials.API
                     return null;
                 }
             }
-            catch
+            catch (HttpRequestException e)
             {
+                Console.WriteLine($"Error accessing server: {e.Message}");
+                return null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unexpected error: {e.Message}");
                 return null;
             }
         }

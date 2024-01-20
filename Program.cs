@@ -1,3 +1,8 @@
+// udìlat attack range 
+// udìlat console UI
+// udìlat additional windup to UI
+
+
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using MagicOrbwalker1.Essentials;
@@ -14,26 +19,13 @@ namespace MagicOrbwalker1
         [DllImport("user32.dll")]
         static extern short GetAsyncKeyState(Keys vKey);
 
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
-        [DllImport("user32.dll")]
-        static extern bool SetCursorPos(int X, int Y);
-
-        [DllImport("user32.dll")]
-        static extern void mouse_event(int dwFlags);
-
-        private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
-        private const int MOUSEEVENTF_RIGHTUP = 0x10;
-
         [STAThread]
         static async Task Main()
         {
             AllocConsole();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+ 
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write(@"
   __  __             _       ___       _                  _ _             
@@ -45,30 +37,40 @@ namespace MagicOrbwalker1
 ");
             Console.ResetColor();
             Console.WriteLine("");
-            Console.Write("Orbwalker is running in background!");
-            Console.WriteLine("");
+            Console.WriteLine("Orbwalker is running in background!");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Hold Space to Activate");
+            Console.WriteLine("Hold Space to Activate");
+            Console.WriteLine("");
+            Console.WriteLine("");
             Console.ResetColor();
+
+            // Drawings //
             Thread overlay = new Thread(makeoverlay);
             overlay.Start();
+            // Drawings //
+
+            // Orbwalker Loop //
             while (true)
             {
                 var apiClient = new API();
                 Values.IsChampionDead = await apiClient.IsChampionOrEntityDeadAsync();
                 Values.SelectedChamp = await apiClient.GetChampionNameAsync();
-                if (IsTargetProcessFocused("League of Legends"))
+
+                if (SpecialFunctions.IsTargetProcessFocused("League of Legends"))
                 {
-                    if (!Values.IsChampionDead.Value)
+                    bool isChampionDead = Values.IsChampionDead.HasValue ? Values.IsChampionDead.Value : true;
+                    if (!isChampionDead && Values.MakeCorrectWindup())
                     {
                         Thread.Sleep(1);
-                        if ((GetAsyncKeyState(Keys.Space) & 0x8000) != 0)
+                        if ((GetAsyncKeyState(Keys.Space) & 0x8000) != 0 && SpecialFunctions.AAtick < Environment.TickCount)
                         {
                             OrbwalkEnemy().Wait();
                         }
                     }
                 }
             }
+            // Orbwalker Loop //
+
         }
         private static void makeoverlay()
         {
@@ -77,54 +79,23 @@ namespace MagicOrbwalker1
                 overlay.Run();
             }
         }
-        private static void ClickAt(Point location)
-        {
-            SetCursorPos(location.X, location.Y);
-            mouse_event(MOUSEEVENTF_RIGHTDOWN);
-            mouse_event(MOUSEEVENTF_RIGHTUP);
-        }
 
-        private static void Click()
-        {
-            mouse_event(MOUSEEVENTF_RIGHTDOWN);
-            mouse_event(MOUSEEVENTF_RIGHTUP);
-        }
-
-        private static bool IsTargetProcessFocused(string processName)
-        {
-            IntPtr activeWindowHandle = GetForegroundWindow();
-            GetWindowThreadProcessId(activeWindowHandle, out int activeProcId);
-
-            try
-            {
-                Process activeProcess = Process.GetProcessById(activeProcId);
-                return activeProcess != null && activeProcess.ProcessName.Equals(processName, StringComparison.OrdinalIgnoreCase);
-            }
-            catch
-            {
-                Console.WriteLine("League of Legends Game not found!!");
-                return false;
-            }
-        }
-        
-        private static int AAtick;
-        private static int MoveCT;
-
+        private static Random rnd = new Random();
         private static async Task OrbwalkEnemy()
         {
-            if (await CanAttack())
+            if (await SpecialFunctions.CanAttack())
             {
                 Values.EnemyPosition = await ScreenCapture.GetEnemyPosition();
                 if (Values.EnemyPosition != Point.Empty && Values.EnemyPosition != new Point(0, 0))
                 {
                     Values.originalPosition = new Point(Cursor.Position.X, Cursor.Position.Y);
-                    ClickAt(Values.EnemyPosition);
+                    SpecialFunctions.ClickAt(Values.EnemyPosition);
 
-                    AAtick = Environment.TickCount;
-                    int windupDelay = await GetAttackWindup();
-                    MoveCT = Environment.TickCount + windupDelay;
+                    SpecialFunctions.AAtick = Environment.TickCount;
+                    int windupDelay = await SpecialFunctions.GetAttackWindup();
+                    SpecialFunctions.MoveCT = Environment.TickCount + windupDelay;
 
-                    SetCursorPos(Values.originalPosition.X, Values.originalPosition.Y);
+                    SpecialFunctions.SetCursorPos(Values.originalPosition.X, Values.originalPosition.Y);
                     var apiClient = new API();
                     float attackSpeed = await apiClient.GetAttackSpeedAsync();
                     if (attackSpeed < 1.75)
@@ -135,35 +106,21 @@ namespace MagicOrbwalker1
                 }
                 else
                 {
-                    Click();
+                    SpecialFunctions.Click();
                 }
+            }
+            else if (SpecialFunctions.CanMove() && SpecialFunctions.MoveCT <= Environment.TickCount)
+            {
+                SpecialFunctions.Click();
+
+                Values.originalPosition = Cursor.Position;
+                SpecialFunctions.MoveCT = Environment.TickCount + rnd.Next(50, 80);
             }
             else
             {
-                Thread.Sleep(5);
-                Click();
+                Thread.Sleep(1);
+                SpecialFunctions.Click();
             }
-        }
-        private static async Task<int> GetAttackWindup()
-        {
-            float windup = Values.getWindup();
-            var apiClient = new API();
-            Values.attackSpeed = await apiClient.GetAttackSpeedAsync();
-            int finalWindUP = (int)((1 / Values.attackSpeed * 1000) * windup);
-            return finalWindUP;
-        }
-
-        private static async Task<int> GetAttackDelay()
-        {
-            var apiClient = new API();
-            Values.attackSpeed = await apiClient.GetAttackSpeedAsync();
-            return (int)(1000.0f / Values.attackSpeed);
-        }
-
-        private static async Task<bool> CanAttack()
-        {
-            int attackDelay = await GetAttackDelay();
-            return AAtick + attackDelay < Environment.TickCount;
         }
     }
 }

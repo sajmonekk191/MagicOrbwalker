@@ -63,39 +63,43 @@ namespace MagicOrbwalker1.Essentials
         {
             var gfx = e.Graphics;
             gfx.ClearScene();
-
-            // INFO //
-
-            gfx.DrawTextWithBackground(_LogoFont, _fontBrush, _LogoBrush, (_graphicsWindow.Width / 2) - 62, 0, $"MagicOrbwalker");
-            
-            gfx.DrawTextWithBackground(_font, _fontBrush, _InfoBrush, 2, _graphicsWindow.Height - 16, $"ATK Speed: {Values.attackSpeed}");
-
-            gfx.DrawTextWithBackground(_font, _fontBrush, _InfoBrush, 2, _graphicsWindow.Height - 35, $"ATK Range: {Values.attackRange}");
-            // INFO //
-
-            // Orbwalker ON/OFF //
-            if ((GetAsyncKeyState(Keys.Space) & 0x8000) != 0)
+            if (SpecialFunctions.IsTargetProcessFocused("League of Legends"))
             {
-                int centerX = _graphicsWindow.Width / 2;
-                int centerY = _graphicsWindow.Height / 2;
+                // INFO //
 
-                gfx.DrawTextWithBackground(_font, _fontBrush, _OrbwalkerActivated, (_graphicsWindow.Width / 2) + 20, (_graphicsWindow.Height / 2) - 10, $"Orbwalker: ON");
+                gfx.DrawTextWithBackground(_LogoFont, _fontBrush, _LogoBrush, (_graphicsWindow.Width / 2) - 62, 0, $"MagicOrbwalker");
+
+                gfx.DrawTextWithBackground(_font, _fontBrush, _InfoBrush, 2, _graphicsWindow.Height - 16, $"ATK Speed: {Values.attackSpeed}");
+
+                gfx.DrawTextWithBackground(_font, _fontBrush, _InfoBrush, 2, _graphicsWindow.Height - 35, $"ATK Range: {Values.attackRange}");
+
+                gfx.DrawTextWithBackground(_font, _fontBrush, _InfoBrush, 2, _graphicsWindow.Height - 50, $"Windup: {Values.Windup}");
+                // INFO //
+
+                // Orbwalker ON/OFF //
+                if ((GetAsyncKeyState(Keys.Space) & 0x8000) != 0)
+                {
+                    int centerX = _graphicsWindow.Width / 2;
+                    int centerY = _graphicsWindow.Height / 2;
+
+                    gfx.DrawTextWithBackground(_font, _fontBrush, _OrbwalkerActivated, (_graphicsWindow.Width / 2) + 20, (_graphicsWindow.Height / 2) - 10, $"Orbwalker: ON");
+                }
+                // Orbwalker ON/OFF //
+
+                /*// Draw Cross //
+                if (Values.EnemyPosition != new System.Drawing.Point(0, 0))
+                {
+                    int crosshairSize = 20;
+                    float thickness = 5.0f;
+                    var crosshairColor = new GameOverlay.Drawing.Color(255, 0, 0);
+
+                    if (_crosshairBrush == null)
+                        _crosshairBrush = gfx.CreateSolidBrush(crosshairColor);
+
+                    gfx.DrawCrosshair(_crosshairBrush, new GameOverlay.Drawing.Point(Values.EnemyPosition.X, Values.EnemyPosition.Y), crosshairSize, thickness, CrosshairStyle.Gap);
+                }
+                // Draw Cross //*/
             }
-            // Orbwalker ON/OFF //
-
-            /*// Draw Cross //
-            if (Values.EnemyPosition != new System.Drawing.Point(0, 0))
-            {
-                int crosshairSize = 20;
-                float thickness = 5.0f;
-                var crosshairColor = new GameOverlay.Drawing.Color(255, 0, 0);
-
-                if (_crosshairBrush == null)
-                    _crosshairBrush = gfx.CreateSolidBrush(crosshairColor);
-
-                gfx.DrawCrosshair(_crosshairBrush, new GameOverlay.Drawing.Point(Values.EnemyPosition.X, Values.EnemyPosition.Y), crosshairSize, thickness, CrosshairStyle.Gap);
-            }
-            // Draw Cross //*/
         }
 
         private static void DestroyGraphics(object sender, DestroyGraphicsEventArgs e)
