@@ -4,6 +4,7 @@
 - PixelSearch Based
 - Simple Drawings
 - Attack Speed/Range calculation
+- Auto Windup for all ADCs
 - Nerest Enemy calculation
 - Very Fast and low CPU cost
 
