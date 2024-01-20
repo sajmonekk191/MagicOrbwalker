@@ -43,18 +43,23 @@ namespace MagicOrbwalker1
  |_|  |_|\__,_|\__, |_|\___|\___/|_|  |_.__/ \_/\_/ \__,_|_|_|\_\___|_|   
                |___/                                                      
 ");
+            Console.ResetColor();
+            Console.WriteLine("");
+            Console.Write("Orbwalker is running in background!");
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Orbwalker is running !");
-            Console.WriteLine("");
+            Console.Write("Hold Space to Activate");
             Console.ResetColor();
+            Thread overlay = new Thread(makeoverlay);
+            overlay.Start();
             while (true)
             {
                 var apiClient = new API();
-                bool? isChampionOrEntityDead = await apiClient.IsChampionOrEntityDeadAsync();
+                Values.IsChampionDead = await apiClient.IsChampionOrEntityDeadAsync();
+                Values.SelectedChamp = await apiClient.GetChampionNameAsync();
                 if (IsTargetProcessFocused("League of Legends"))
                 {
-                    if (!isChampionOrEntityDead.Value)
+                    if (!Values.IsChampionDead.Value)
                     {
                         Thread.Sleep(1);
                         if ((GetAsyncKeyState(Keys.Space) & 0x8000) != 0)
@@ -65,7 +70,13 @@ namespace MagicOrbwalker1
                 }
             }
         }
-
+        private static void makeoverlay()
+        {
+            using (var overlay = new Drawings())
+            {
+                overlay.Run();
+            }
+        }
         private static void ClickAt(Point location)
         {
             SetCursorPos(location.X, location.Y);
@@ -101,22 +112,19 @@ namespace MagicOrbwalker1
 
         private static async Task OrbwalkEnemy()
         {
-            if(await CanAttack())
+            if (await CanAttack())
             {
-                Point originalPosition;
-
-                Point? objectPosition = await ScreenCapture.GetEnemyPosition();
-
-                if (objectPosition.HasValue && objectPosition.Value != new Point(0, 0))
+                Values.EnemyPosition = await ScreenCapture.GetEnemyPosition();
+                if (Values.EnemyPosition != Point.Empty && Values.EnemyPosition != new Point(0, 0))
                 {
-                    originalPosition = new Point(Cursor.Position.X, Cursor.Position.Y);
-                    ClickAt(objectPosition.Value);
+                    Values.originalPosition = new Point(Cursor.Position.X, Cursor.Position.Y);
+                    ClickAt(Values.EnemyPosition);
 
                     AAtick = Environment.TickCount;
                     int windupDelay = await GetAttackWindup();
                     MoveCT = Environment.TickCount + windupDelay;
 
-                    SetCursorPos(originalPosition.X, originalPosition.Y);
+                    SetCursorPos(Values.originalPosition.X, Values.originalPosition.Y);
                     var apiClient = new API();
                     float attackSpeed = await apiClient.GetAttackSpeedAsync();
                     if (attackSpeed < 1.75)
@@ -132,7 +140,7 @@ namespace MagicOrbwalker1
             }
             else
             {
-                Thread.Sleep(10);
+                Thread.Sleep(5);
                 Click();
             }
         }
@@ -140,16 +148,16 @@ namespace MagicOrbwalker1
         {
             float windup = Values.getWindup();
             var apiClient = new API();
-            float attackSpeed = await apiClient.GetAttackSpeedAsync();
-            int finalWindUP = (int)((1 / attackSpeed * 1000) * windup);
+            Values.attackSpeed = await apiClient.GetAttackSpeedAsync();
+            int finalWindUP = (int)((1 / Values.attackSpeed * 1000) * windup);
             return finalWindUP;
         }
 
         private static async Task<int> GetAttackDelay()
         {
             var apiClient = new API();
-            float attackSpeed = await apiClient.GetAttackSpeedAsync();
-            return (int)(1000.0f / attackSpeed);
+            Values.attackSpeed = await apiClient.GetAttackSpeedAsync();
+            return (int)(1000.0f / Values.attackSpeed);
         }
 
         private static async Task<bool> CanAttack()

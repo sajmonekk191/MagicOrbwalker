@@ -40,6 +40,10 @@
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "dependencies": {
+            "GameOverlay.Net": {
+              "target": "Package",
+              "version": "[4.3.1, )"
+            },
             "Hazdryx.FastBitmap": {
               "target": "Package",
               "version": "[1.3.2, )"

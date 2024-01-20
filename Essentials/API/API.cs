@@ -49,7 +49,7 @@ namespace MagicOrbwalker1.Essentials.API
             var data = await GetActivePlayerDataAsync();
             return data?["championStats"]["attackRange"].ToObject<float>() ?? -1;
         }
-        /*public async Task<string> GetChampionNameAsync()
+        public async Task<string> GetChampionNameAsync()
         {
             try
             {
@@ -70,7 +70,7 @@ namespace MagicOrbwalker1.Essentials.API
             {
                 return null;
             }
-        }*/
+        }
         public async Task<bool?> IsChampionOrEntityDeadAsync()
         {
             try

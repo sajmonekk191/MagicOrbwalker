@@ -9,10 +9,10 @@ namespace MagicOrbwalker1.Essentials
         public static async Task<Point> GetEnemyPosition()
         {
             var apiClient = new API.API();
-            float attackRange = await apiClient.GetAttackRangeAsync();
-            if (attackRange != 0)
+            Values.attackRange = await apiClient.GetAttackRangeAsync();
+            if (Values.attackRange != 0)
             {
-                Rectangle rect = CalculateRectangle(attackRange);
+                Rectangle rect = CalculateRectangle(Values.attackRange);
                 return new Point((Size)PixelSearchEnemy(rect, Values.EnemyPix, Values.EnemyPix1));
             }
             return new Point(0, 0);
