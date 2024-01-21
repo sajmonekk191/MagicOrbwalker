@@ -7,7 +7,7 @@
 - Auto Windup for all ADCs
 - Nearest Enemy calculation
 - Very Fast and low CPU cost
-- Additional features soon
++ Additional features soon
 
 **Quick Setup**
 - Set ingame setting AttackChampionOnly - "MB3" / MouseWheel
