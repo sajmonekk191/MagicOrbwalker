@@ -63,7 +63,7 @@ namespace MagicOrbwalker1.Essentials
         {
             var gfx = e.Graphics;
             gfx.ClearScene();
-            if (SpecialFunctions.IsTargetProcessFocused("League of Legends"))
+            if (SpecialFunctions.IsTargetProcessFocused("League of Legends") && Values.DrawingsEnabled)
             {
                 // INFO //
 

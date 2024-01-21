@@ -10,17 +10,25 @@ namespace MagicOrbwalker1.Essentials
     {
         // Orbwalker Components //
         public static bool Activated = false;
-        public static Point originalPosition;
+
+        public static Point originalMousePosition;
         public static Point EnemyPosition;
         public static Color EnemyPix = Color.FromArgb(52, 3, 0);
         public static Color EnemyPix1 = Color.FromArgb(53, 3, 0);
         // Orbwalker Components //
 
         // Main Hodnoty //
-        public static float attackRange;
-        public static float attackSpeed;
-        public static float Windup;
-        public static string? SelectedChamp;
+        public static float attackRange = 0.0f;
+        public static float attackSpeed = 0.0f;
+        public static bool ShowAttackRange = false;
+        public static bool AttackChampionOnly = false;
+
+        public static bool DrawingsEnabled = true;
+
+        public static float Windup = 0.0f;
+        //public static float extraWindup = 0.0f;
+
+        public static string? SelectedChamp = "none";
         public static bool? IsChampionDead;
         // Main Hodnoty //
 
