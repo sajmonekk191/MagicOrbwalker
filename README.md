@@ -8,6 +8,10 @@
 - Nerest Enemy calculation
 - Very Fast and low CPU cost
 
+**Quick Setup**
+- Set ingame setting AttackChampionOnly - "MB3" / MouseWheel
+- Set ingame setting ShowMoreStats - "C"
+
 Showcase:
 
 ![Test Gif](https://github.com/sajmonekk191/MagicOrbwalker/blob/main/test.gif)
