@@ -5,7 +5,7 @@
 - Simple Drawings
 - Attack Speed/Range calculation
 - Auto Windup for all ADCs
-- Nerest Enemy calculation
+- Nearest Enemy calculation
 - Very Fast and low CPU cost
 
 **Quick Setup**
