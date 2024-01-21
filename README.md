@@ -1,6 +1,5 @@
 # Simple League of Legends External Orbwalker
 ## Working on patch 14.1
-next updates soon
 
 - PixelSearch Based
 - Simple Drawings
@@ -8,6 +7,7 @@ next updates soon
 - Auto Windup for all ADCs
 - Nearest Enemy calculation
 - Very Fast and low CPU cost
+- Additional features soon
 
 **Quick Setup**
 - Set ingame setting AttackChampionOnly - "MB3" / MouseWheel
