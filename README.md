@@ -7,6 +7,7 @@
 - Auto Windup for all ADCs
 - Nearest Enemy calculation
 - Very Fast and low CPU cost
+- Set Sleep on Low AttackSpeed (if low AttackSpeed 0.6 - 1.7 it could cancel AutoAttacks, This is fix for it)
 + Additional features soon
 
 **Quick Setup**
