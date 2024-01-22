@@ -26,6 +26,7 @@ namespace MagicOrbwalker1.Essentials
         public static bool DrawingsEnabled = true;
 
         public static float Windup = 0.0f;
+        public static int SleepOnLowAS = 80;
         //public static float extraWindup = 0.0f;
 
         public static string? SelectedChamp = "none";

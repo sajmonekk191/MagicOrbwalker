@@ -142,7 +142,7 @@ namespace MagicOrbwalker1
             PrintStart();
             Console.WriteLine("Cheat Menu:");
             Console.WriteLine("");
-            Console.WriteLine("1. Set Extra Windup");
+            Console.WriteLine("1. Set Sleep on Low AttackSpeed");
             if (Values.ShowAttackRange) SucessMessage("2. Toggle Show Range");
             else ErrorMessage("2. Toggle Show Range");
             if (Values.AttackChampionOnly) SucessMessage("3. Toggle Attack Champion Only");
@@ -155,7 +155,7 @@ namespace MagicOrbwalker1
             switch (input)
             {
                 case "1":
-                    SetExtraWindup();
+                    SetSleepOnAS();
                     break;
                 case "2":
                     if(Values.ShowAttackRange) Values.ShowAttackRange = false;
@@ -206,14 +206,15 @@ namespace MagicOrbwalker1
             }
         }
 
-        static void SetExtraWindup()
+        static void SetSleepOnAS()
         {
             Console.WriteLine("");
-            Console.Write("Enter Extra Windup value (in milliseconds): ");
-            if (float.TryParse(Console.ReadLine(), out float extraWindup))
+            Console.WriteLine("Current Sleep on AttackSpeed is " + Values.SleepOnLowAS);
+            Console.Write("Enter Sleep on AttackSpeed 0 > 1.75 (in milliseconds): ");
+            if (int.TryParse(Console.ReadLine(), out int sleeponAS))
             {
-                //Values.extraWindup = extraWindup;
-                SucessMessage($"Extra Windup set to: {extraWindup}ms");
+                Values.SleepOnLowAS = sleeponAS;
+                SucessMessage($"Sleep on low AttackSpeed set to: {sleeponAS}ms");
                 Thread.Sleep(500);
                 CheatMenu();
             }
@@ -264,11 +265,10 @@ namespace MagicOrbwalker1
                     SpecialFunctions.MoveCT = Environment.TickCount + windupDelay;
 
                     SpecialFunctions.SetCursorPos(Values.originalMousePosition.X, Values.originalMousePosition.Y);
-                    var apiClient = new API();
-                    float attackSpeed = await apiClient.GetAttackSpeedAsync();
-                    if (attackSpeed < 1.75)
+
+                    if (Values.attackSpeed < 1.75)
                     {
-                        Thread.Sleep(150);
+                        Thread.Sleep(Values.SleepOnLowAS);
                     }
 
                 }
