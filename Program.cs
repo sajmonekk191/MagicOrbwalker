@@ -254,7 +254,7 @@ namespace MagicOrbwalker1
         {
             if (await SpecialFunctions.CanAttack())
             {
-                Values.EnemyPosition = await ScreenCapture.GetEnemyPosition();
+                Values.EnemyPosition = await ScreenCapture.GetEnemyPosition ();
                 if (Values.EnemyPosition != Point.Empty && Values.EnemyPosition != new Point(0, 0))
                 {
                     Values.originalMousePosition = new Point(Cursor.Position.X, Cursor.Position.Y);

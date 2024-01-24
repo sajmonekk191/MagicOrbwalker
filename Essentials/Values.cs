@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MagicOrbwalker1.Essentials
+﻿namespace MagicOrbwalker1.Essentials
 {
     class Values
     {
@@ -13,8 +7,12 @@ namespace MagicOrbwalker1.Essentials
 
         public static Point originalMousePosition;
         public static Point EnemyPosition;
-        public static Color EnemyPix = Color.FromArgb(52, 3, 0);
-        public static Color EnemyPix1 = Color.FromArgb(53, 3, 0);
+
+        public static Color EnemyPix = Color.FromArgb(52, 3, 0); // Enemy Pixel Normal
+        public static Color EnemyPix1 = Color.FromArgb(53, 3, 0); // Enemy Pixel Normal
+
+        public static Color EnemyPixBS = Color.FromArgb(148, 81, 165); // Enemy Pixel BlackShield
+        public static Color EnemyPixBS1 = Color.FromArgb(82, 40, 90); // Enemy Pixel BlackShield
         // Orbwalker Components //
 
         // Main Hodnoty //

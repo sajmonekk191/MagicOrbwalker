@@ -19,3 +19,4 @@ C:\Users\Root\source\repos\MagicOrbwalker1\MagicOrbwalker1\bin\Debug\net6.0-wind
 C:\Users\Root\source\repos\MagicOrbwalker1\MagicOrbwalker1\bin\Debug\net6.0-windows\SharpDX.dll
 C:\Users\Root\source\repos\MagicOrbwalker1\MagicOrbwalker1\bin\Debug\net6.0-windows\SharpDX.Direct2D1.dll
 C:\Users\Root\source\repos\MagicOrbwalker1\MagicOrbwalker1\bin\Debug\net6.0-windows\SharpDX.DXGI.dll
+C:\Users\Root\source\repos\MagicOrbwalker1\MagicOrbwalker1\obj\Debug\net6.0-windows\MagicOrbwalker1.csproj.AssemblyReference.cache

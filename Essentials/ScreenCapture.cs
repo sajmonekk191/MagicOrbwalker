@@ -13,7 +13,7 @@ namespace MagicOrbwalker1.Essentials
             if (Values.attackRange != 0)
             {
                 Rectangle rect = CalculateRectangle(Values.attackRange);
-                return new Point((Size)PixelSearchEnemy(rect, Values.EnemyPix, Values.EnemyPix1));
+                return new Point((Size)PixelSearchEnemy(rect, Values.EnemyPix, Values.EnemyPix1, Values.EnemyPixBS, Values.EnemyPixBS1));
             }
             return new Point(0, 0);
         }
@@ -30,13 +30,13 @@ namespace MagicOrbwalker1.Essentials
 
             return Rectangle.Empty;
         }
-        public static Point PixelSearchEnemy(Rectangle rect, Color pixelColor, Color pixelColor1)
+        public static Point PixelSearchEnemy(Rectangle rect, Color pixelColor, Color pixelColor1, Color PixelColorBS, Color PixelColorBS1)
         {
             Point playerPos = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
             if (rect.IsEmpty)
                 return new Point(0, 0);
 
-            List<Point> points = PixelSearchEnemies(rect, pixelColor, pixelColor1, playerPos);
+            List<Point> points = PixelSearchEnemies(rect, pixelColor, pixelColor1, PixelColorBS, PixelColorBS1, playerPos);
             Point closestPoint = new Point(0, 0);
             int closestDistance = int.MaxValue;
 
@@ -59,7 +59,7 @@ namespace MagicOrbwalker1.Essentials
             return dx * dx + dy * dy;
         }
 
-        public static List<Point> PixelSearchEnemies(Rectangle rect, Color PixelColor, Color PixelColor1, Point PlayerPos)
+        public static List<Point> PixelSearchEnemies(Rectangle rect, Color PixelColor, Color PixelColor1, Color PixelColorBS, Color PixelColorBS1, Point PlayerPos)
         {
             int offsetX = 65;
             int offsetY = 95;
@@ -76,8 +76,10 @@ namespace MagicOrbwalker1.Essentials
                 offsetY = (int)(offsetY * YRatio);
 
             }
-            int searchvalue = PixelColor.ToArgb();
-            int searchvalue1 = PixelColor1.ToArgb();
+            int searchvalueNormal = PixelColor.ToArgb(); // EnemyPix
+            int searchvalueNormal1 = PixelColor1.ToArgb(); // EnemyPix1
+            int searchvalueBS = PixelColorBS.ToArgb(); // EnemyPixBS
+            int searchvalueBS1 = PixelColorBS1.ToArgb(); // EnemyPixBS1
 
             List<Point> Points = new List<Point>();
             object lockObj = new object();
@@ -89,28 +91,38 @@ namespace MagicOrbwalker1.Essentials
             }
             using (FastBitmap bitmap = new FastBitmap(BMP))
             {
-                Parallel.For(0, bitmap.Length, i =>
+                Parallel.For(0, bitmap.Length - 1, i =>
                 {
-                    if (searchvalue == bitmap.GetI(i))
+                    int currentPixel = bitmap.GetI(i);
+                    int nextPixel = bitmap.GetI(i + 1);
+
+                    // Check for normal enemy pixel followed by its pair
+                    if (currentPixel == searchvalueNormal && nextPixel == searchvalueNormal1)
                     {
-                        i += 1;
-                        if (i < bitmap.Length && searchvalue1 == bitmap.GetI(i))
-                        {
-                            int x = i % bitmap.Width;
-                            int y = i / bitmap.Width;
-                            if (InCircle(x, y, rect))
-                            {
-                                lock (lockObj)
-                                {
-                                    Points.Add(new Point(x + rect.X + offsetX, y + rect.Y + offsetY));
-                                }
-                            }
-                        }
+                        AddPointToList(i, bitmap, rect, offsetX, offsetY, lockObj, Points);
+                    }
+
+                    // Check for black shield pixel followed by its pair
+                    else if (currentPixel == searchvalueBS && nextPixel == searchvalueBS1)
+                    {
+                        AddPointToList(i, bitmap, rect, offsetX, offsetY, lockObj, Points);
                     }
                 });
             }
 
             return Points;
+        }
+        private static void AddPointToList(int index, FastBitmap bitmap, Rectangle rect, int offsetX, int offsetY, object lockObj, List<Point> Points)
+        {
+            int x = index % bitmap.Width;
+            int y = index / bitmap.Width;
+            if (InCircle(x, y, rect))
+            {
+                lock (lockObj)
+                {
+                    Points.Add(new Point(x + rect.X + offsetX, y + rect.Y + offsetY));
+                }
+            }
         }
         public static bool InCircle(int X, int Y, Rectangle rect)
         {
