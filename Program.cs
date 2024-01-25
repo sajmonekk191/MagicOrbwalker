@@ -27,11 +27,12 @@ namespace MagicOrbwalker1
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Menu //
-            CNSL.LobbyShow();
+            Thread LobbyHandle = new Thread(() => CNSL.LobbyShow());
+            LobbyHandle.Start();
             // Menu //
 
             // Drawings //
-            Thread overlay = new Thread(makeoverlay);
+            Thread overlay = new Thread(() => makeoverlay());
             overlay.Start();
             // Drawings //
 
