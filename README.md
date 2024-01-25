@@ -1,7 +1,7 @@
 # Simple League of Legends External Orbwalker
 ## Working on patch 14.2
 
-- PixelSearch Based
+- Efficient PixelSearch Based
 - Simple Drawings
 - Attack Speed/Range calculation
 - Auto Windup for all ADCs
