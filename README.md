@@ -11,6 +11,7 @@
 + Additional features soon
 
 **Quick Setup**
+- 1920x1080 Resolution
 - Set ingame setting AttackChampionOnly - "MB3" / MouseWheel
 - Set ingame setting ShowMoreStats - "C"
 
