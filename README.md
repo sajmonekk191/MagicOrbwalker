@@ -1,5 +1,5 @@
 # Simple League of Legends External Orbwalker
-## Working on patch 14.6
+## Working on patch 14.6 (Outdated)
 
 - Efficient PixelSearch Based
 - Simple Drawings
